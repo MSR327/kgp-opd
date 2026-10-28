@@ -1,0 +1,15 @@
+# personal data: browser profile (cookies), logs, captured pages
+chrome_profile/
+recon_out/
+bot_log.txt
+trace.txt
+launchd_out.txt
+select_clinic_raw.html
+# tooling
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.claude/
