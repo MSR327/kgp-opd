@@ -142,6 +142,13 @@ def _launchctl(*args):
                           capture_output=True, text=True)
 
 
+def _self_command():
+    """How to run this program again: the app binary itself when packaged, else python -m."""
+    if getattr(sys, "frozen", False):
+        return [sys.executable]
+    return [sys.executable, "-m", "bcroy_booker"]
+
+
 def agents_dir():
     return Path.home() / "Library" / "LaunchAgents"
 
@@ -156,8 +163,8 @@ def schedule(when, book_args, launchctl=_launchctl):
     plist.parent.mkdir(parents=True, exist_ok=True)
     plist.write_bytes(plistlib.dumps({
         "Label": label,
-        "ProgramArguments": [sys.executable, "-m", "bcroy_booker", "book", "--headless",
-                             "--scheduled-job", label, *book_args],
+        "ProgramArguments": _self_command() + ["book", "--headless", "--scheduled-job", label,
+                                               *book_args],
         "StartCalendarInterval": {"Month": when.month, "Day": when.day,
                                   "Hour": when.hour, "Minute": when.minute},
         # Without this, macOS treats the job as background work and its timers wake late

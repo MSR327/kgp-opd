@@ -1,0 +1,53 @@
+# Builds the double-click apps. Push a tag like v2.1.0 to publish them as a GitHub Release.
+name: apps
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest   # Apple Silicon
+            asset: BC-Roy-Booker-mac.zip
+          - os: windows-latest
+            asset: BC-Roy-Booker-windows.zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install . pyinstaller
+      - run: >
+          pyinstaller --noconfirm --windowed --name "BC Roy Booker" --paths .
+          --collect-all playwright --copy-metadata keyring --collect-submodules keyring.backends
+          packaging/launcher.py
+      - name: Zip (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          "dist/BC Roy Booker.app/Contents/MacOS/BC Roy Booker" --version
+          cd dist && ditto -c -k --keepParent "BC Roy Booker.app" "../${{ matrix.asset }}"
+      - name: Zip (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path "dist/BC Roy Booker" -DestinationPath "${{ matrix.asset }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - run: >
+          gh release create "$GITHUB_REF_NAME" *.zip --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME"
+          --notes "Download the zip for your computer, unzip it, and open BC Roy Booker. See the README for the first-launch warning."
+        env:
+          GH_TOKEN: ${{ github.token }}

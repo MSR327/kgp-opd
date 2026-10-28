@@ -1,5 +1,10 @@
 import sys
 
-from bcroy_booker.cli import main
+if len(sys.argv) == 1:  # no command: open the app window
+    from bcroy_booker.gui import main
 
-sys.exit(main())
+    main()
+else:
+    from bcroy_booker.cli import main
+
+    sys.exit(main())

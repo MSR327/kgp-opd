@@ -52,6 +52,8 @@ def test_schedule_writes_an_interactive_one_shot_job(tmp_path, monkeypatch):
     assert plist["StartCalendarInterval"] == {"Month": 11, "Day": 2, "Hour": 7, "Minute": 50}
     args = plist["ProgramArguments"]
     assert args[1:4] == ["-m", "bcroy_booker", "book"] and "--scheduled-job" in args
+    monkeypatch.setattr(system.sys, "frozen", True, raising=False)
+    assert system._self_command() == [system.sys.executable]  # the packaged app runs itself
     assert args[-2:] == ["--doctor", "doc1"]
     assert calls[-1][0] == "bootstrap"
     assert system.scheduled_jobs() == [label]

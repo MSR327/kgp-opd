@@ -2,13 +2,27 @@
 
 Books an OPD slot at **B.C. Roy Technology Hospital, IIT Kharagpur** (iMediX) the moment booking opens, 60 minutes before the session. Popular doctors' slots are gone within about two minutes, which is hard to beat by hand.
 
-It runs on your own computer (macOS or Windows) with your own iMediX login. It needs no AI, no API key and no server: only Python and the Chrome or Edge you already have.
+It runs on your own computer (macOS or Windows) with your own iMediX login. It needs no AI, no API key and no server. Download the app and click; no terminal needed.
 
 > **Please be fair.** Book only appointments you will attend, run one copy per person, and don't change the timings to poll the server harder. The hospital allows one booking per patient per day, and OPD bookings can't be cancelled online.
 
-## Install
+## The easy way: the app (no terminal)
 
-You need **Python 3.11 or newer** ([python.org](https://www.python.org/downloads/); on Windows tick *"Add python.exe to PATH"*) and **Google Chrome or Microsoft Edge**.
+1. Go to **[Releases](https://github.com/MSR327/bcroy-booker/releases/latest)** and download the zip for your computer (`mac` for Apple Silicon Macs, `windows` for Windows). Unzip it.
+2. Open **BC Roy Booker**. The first time, your computer warns that the developer is unknown, because the app isn't paid-signed:
+   * **macOS:** click *Done*, then open *System Settings → Privacy & Security*, scroll down and click **Open Anyway**.
+   * **Windows:** on *"Windows protected your PC"*, click **More info → Run anyway**. Inside the unzipped folder, open `BC Roy Booker.exe`.
+3. Click **Log in…** and log in once in the browser window that opens (roll number, password, captcha). Your login is saved in this computer's password store (Keychain on macOS, Credential Manager on Windows), never in a file.
+4. Click **Load sessions**, type part of your doctor's name, and select a session.
+5. Click **Test (no booking)** once to check everything works, then **Book when it opens**.
+
+Keep the window open until it says *Booked*. It stops the computer from idle-sleeping while it waits. Keep it plugged in with the lid open. You can start it hours early.
+
+You need Google Chrome or Microsoft Edge (every Windows PC has Edge).
+
+## The terminal way
+
+You need **Python 3.11 or newer** ([python.org](https://www.python.org/downloads/); on Windows tick *"Add python.exe to PATH"*).
 
 ```bash
 # macOS (Terminal)
@@ -18,11 +32,14 @@ python3 -m pip install --user https://github.com/MSR327/bcroy-booker/archive/ref
 py -m pip install --user https://github.com/MSR327/bcroy-booker/archive/refs/heads/main.zip
 ```
 
-If your terminal then says `bcroy-book: command not found`, use `python3 -m bcroy_booker` (macOS) or `py -m bcroy_booker` (Windows) in place of `bcroy-book` in the commands below.
+This installs two things:
 
-## Use
+* `bcroy-booker` opens the same app window.
+* `bcroy-book` is the command line.
 
-**1. Log in once.** A browser window opens; log in as usual (roll number, password, captcha). Your login is saved in this computer's password store (Keychain on macOS, Credential Manager on Windows), never in a file.
+If your terminal says `command not found`, use `python3 -m bcroy_booker` (macOS) or `py -m bcroy_booker` (Windows) instead of `bcroy-book`.
+
+**1. Log in once.**
 
 ```bash
 bcroy-book setup
@@ -48,7 +65,7 @@ bcroy-book book --doctor "rao" --dry-run
   bcroy-book schedule --doctor "rao"
   ```
   The Mac must be awake then. The command prints a `pmset` line that wakes it up; keep it plugged in. Cancel with `bcroy-book unschedule`.
-* **Windows** (or macOS without scheduling): start it any time before booking opens, even the night before, and leave it running. It keeps the computer from sleeping and waits by itself. Keep the laptop plugged in with the lid open.
+* **Windows** (or macOS without scheduling): start it any time before booking opens and leave it running. It waits by itself.
   ```bash
   bcroy-book book --doctor "rao"
   ```

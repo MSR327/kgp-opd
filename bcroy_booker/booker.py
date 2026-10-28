@@ -44,11 +44,16 @@ RETRY_FOR = 120  # keep trying this long after opening
 STOP_WORDS = re.compile(r"already|filled|full|time is over|no (slot|seat)", re.I)
 
 
+LOG_LISTENERS = []  # e.g. the app window, which shows every log line
+
+
 def log(msg):
     line = f"[{datetime.now(IST):%H:%M:%S.%f}"[:-3] + f"] {msg}"
     print(line, flush=True)
     with (system.home() / "bot_log.txt").open("a", encoding="utf-8") as f:
         f.write(line + "\n")
+    for listener in LOG_LISTENERS:
+        listener(line)
 
 
 def notify(msg):

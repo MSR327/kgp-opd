@@ -40,7 +40,7 @@ def _session_name(s):
     return "Forenoon" if s.get("session") == "FN" else "Afternoon"
 
 
-def _status(s, now):
+def status(s, now):
     if s.get("available") != "1":
         return "not available"
     if s.get("booking_status") == "2":
@@ -68,14 +68,20 @@ def cmd_setup(args):
     return 1
 
 
-def cmd_doctors(args):
+def fetch_sessions(date=None):
+    """Every session in the current roster (logs in with the saved login)."""
     from playwright.sync_api import sync_playwright
     with sync_playwright() as p:
         ctx = open_browser(p, headless=True)
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
         ccode = get_ccode(ctx, login(page, interactive=False))
-        sessions = roster_sessions(ctx, ccode, args.date)
+        sessions = roster_sessions(ctx, ccode, date)
         ctx.close()
+    return sessions
+
+
+def cmd_doctors(args):
+    sessions = fetch_sessions(args.date)
     if args.name:
         sessions = [s for s in sessions if doctor_matches(s, args.name)]
     if not sessions:
@@ -86,7 +92,7 @@ def cmd_doctors(args):
     for s in sessions:
         when = f"{s['start']:%a %d %b %H:%M} {s.get('session', '')}"
         print(f"{when:<22} {s['docname'][:33]:<34} {s['doc_id'][:13]:<14} "
-              f"{s.get('patients', '?')}/{s.get('max_no_of_patients', '?'):<6} {_status(s, now)}")
+              f"{s.get('patients', '?')}/{s.get('max_no_of_patients', '?'):<6} {status(s, now)}")
     print("\nBook with:  bcroy-book book --doctor \"<part of the name, or the id>\"")
     return 0
 
@@ -141,6 +147,8 @@ def cmd_book(args):
                 log(f"No upcoming bookable session for {args.doctor!r} in the roster. Nothing to do.")
                 notify("No upcoming session found")
                 return 0
+            if getattr(args, "on_target", None):  # e.g. the app window's countdown
+                args.on_target(prep["target"], prep["clock"].offset())
             return run_booking(ctx, page, args, **prep)
     finally:
         if args.scheduled_job:  # last step of a scheduled run: remove the job (ends this process)
