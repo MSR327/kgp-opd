@@ -1,6 +1,6 @@
 import pytest
 
-from bcroy_booker.cli import build_parser, main
+from kgp_opd.cli import build_parser, main
 
 
 def test_book_needs_a_doctor():

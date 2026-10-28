@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from urllib.parse import parse_qs, urlencode, urlsplit
 
-from bcroy_booker import system
+from kgp_opd import system
 
 BASE = "https://imedixbcr.iitkgp.ac.in/iMediX/"
 ROSTER = BASE + "jspfiles/processDutyRoster.jsp"
@@ -118,11 +118,11 @@ def login(page, interactive=True, force_manual=False):
                 page.wait_for_url(logged_in, timeout=20000)
             except Exception:
                 log("Saved login did not work (password changed?).")
-                notify("Saved login failed - run: bcroy-book setup")
+                notify("Saved login failed - run: kgp-opd setup")
                 creds = None
         if not creds:
             if not interactive:
-                raise RuntimeError("no working saved login; run `bcroy-book setup` first")
+                raise RuntimeError("no working saved login; run `kgp-opd setup` first")
             log("Log in in the browser window (roll no, password, captcha). Waiting...")
             page.wait_for_url(logged_in, timeout=0)
             if typed.get("uid") and typed.get("pwd"):

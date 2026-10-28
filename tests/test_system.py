@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pytest
 
-from bcroy_booker import system
+from kgp_opd import system
 
 
 def test_creds_round_trip():
@@ -51,7 +51,7 @@ def test_schedule_writes_an_interactive_one_shot_job(tmp_path, monkeypatch):
     assert plist["ProcessType"] == "Interactive"
     assert plist["StartCalendarInterval"] == {"Month": 11, "Day": 2, "Hour": 7, "Minute": 50}
     args = plist["ProgramArguments"]
-    assert args[1:4] == ["-m", "bcroy_booker", "book"] and "--scheduled-job" in args
+    assert args[1:4] == ["-m", "kgp_opd", "book"] and "--scheduled-job" in args
     monkeypatch.setattr(system.sys, "frozen", True, raising=False)
     assert system._self_command() == [system.sys.executable]  # the packaged app runs itself
     assert args[-2:] == ["--doctor", "doc1"]

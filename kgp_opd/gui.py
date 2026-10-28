@@ -9,9 +9,9 @@ import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox, ttk
 
-from bcroy_booker import __version__, booker, system
-from bcroy_booker.booker import IST, bookable
-from bcroy_booker.cli import cmd_book, cmd_setup, fetch_sessions, status
+from kgp_opd import __version__, imedix, system
+from kgp_opd.imedix import IST, bookable
+from kgp_opd.cli import cmd_book, cmd_setup, fetch_sessions, status
 
 PAD = 10
 
@@ -26,7 +26,7 @@ class App:
         self.opens = None  # when booking opens (server time) for the running booking
         self.offset = 0.0
 
-        root.title("BC Roy Booker")
+        root.title("KGP OPD")
         root.minsize(640, 560)
         root.protocol("WM_DELETE_WINDOW", self.on_close)
         frame = ttk.Frame(root, padding=PAD)
@@ -78,7 +78,7 @@ class App:
         self.log.pack(fill="both", expand=True)
         ttk.Label(frame, text=f"v{__version__} · logs in {system.home()}", foreground="gray").pack(anchor="e")
 
-        booker.LOG_LISTENERS.append(lambda line: self.ui.put(lambda: self.append_log(line)))
+        imedix.LOG_LISTENERS.append(lambda line: self.ui.put(lambda: self.append_log(line)))
         self.refresh()
         self.root.after(100, self.pump)
         self.root.after(500, self.tick)
@@ -178,7 +178,7 @@ class App:
         q = self.search.get().strip()
         now = datetime.now(IST)
         for i, s in enumerate(self.sessions):
-            if q and not booker.doctor_matches(s, q):
+            if q and not imedix.doctor_matches(s, q):
                 continue
             self.table.insert("", "end", iid=str(i), values=(
                 f"{s['start']:%a %d %b %H:%M}", s["docname"],

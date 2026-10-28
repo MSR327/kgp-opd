@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 
-from bcroy_booker.booker import already_booked, classify, slip_shows_booking, watch_and_strike  # noqa: E402
+from kgp_opd.imedix import already_booked, classify, slip_shows_booking, watch_and_strike  # noqa: E402
 
 BLOCKED = ("You have already booked an appoinment with Dr. Other Doctor.<br>Booking ID: "
            "01-26-00000000001<br>Please try after 12 AM.<br><br><a id='btn-print-booking-slip' "
@@ -246,7 +246,7 @@ SLIP = """<html><body><h3>BOOKING/MEDICINE SLIP</h3><table>
 
 def test_slip_shows_booking():
     from datetime import datetime
-    from bcroy_booker.booker import IST
+    from kgp_opd.imedix import IST
     since = datetime(2026, 10, 16, 16, 0, tzinfo=IST)
     assert slip_shows_booking(SLIP, "Dr. Other Doctor", since)
     assert not slip_shows_booking(SLIP, "Dr. Test Doctor", since)  # other doctor
@@ -256,7 +256,7 @@ def test_slip_shows_booking():
 
 
 def test_pick_clinic_never_defaults_to_emergency():
-    from bcroy_booker.booker import pick_clinic
+    from kgp_opd.imedix import pick_clinic
     assert pick_clinic([("45", "Emergency"), ("31", "General Clinic")], None) == ("31", "General Clinic")
     assert pick_clinic([("13", "Medicine")], None) == ("13", "Medicine")
     assert pick_clinic([("45", "Emergency")], None) is None  # better to stop than book Emergency

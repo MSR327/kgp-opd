@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 
-from bcroy_booker.booker import ClockSync, sync_clock, watch_and_strike  # noqa: E402
+from kgp_opd.imedix import ClockSync, sync_clock, watch_and_strike  # noqa: E402
 from tests.test_fire import FakeIMediX, FORM, Q, roster_url  # noqa: E402
 
 

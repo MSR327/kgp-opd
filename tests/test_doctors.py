@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 
-from bcroy_booker.booker import IST, AmbiguousDoctor, doctor_matches, find_session, roster_sessions
+from kgp_opd.imedix import IST, AmbiguousDoctor, doctor_matches, find_session, roster_sessions
 
 
 def ses(id_, start, session="FN", available="1", status="0", patients="3", maximum="20", before="60"):

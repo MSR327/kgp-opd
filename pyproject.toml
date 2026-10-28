@@ -3,8 +3,8 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bcroy-booker"
-version = "2.1.0"
+name = "kgp-opd"
+version = "2.2.0"
 description = "Book an OPD slot at B.C. Roy Technology Hospital (IIT Kharagpur) the moment booking opens"
 readme = "README.md"
 license = "MIT"
@@ -16,13 +16,13 @@ dependencies = ["playwright>=1.40", "keyring>=24"]
 dev = ["pytest>=8"]
 
 [project.scripts]
-bcroy-book = "bcroy_booker.cli:main"
+kgp-opd = "kgp_opd.cli:main"
 
 [project.gui-scripts]
-bcroy-booker = "bcroy_booker.gui:main"
+kgp-opd-app = "kgp_opd.gui:main"
 
 [tool.setuptools]
-packages = ["bcroy_booker"]
+packages = ["kgp_opd"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

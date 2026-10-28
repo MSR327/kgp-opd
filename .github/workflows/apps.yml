@@ -12,9 +12,9 @@ jobs:
       matrix:
         include:
           - os: macos-latest   # Apple Silicon
-            asset: BC-Roy-Booker-mac.zip
+            asset: KGP-OPD-mac.zip
           - os: windows-latest
-            asset: BC-Roy-Booker-windows.zip
+            asset: KGP-OPD-windows.zip
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -23,17 +23,17 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install . pyinstaller
       - run: >
-          pyinstaller --noconfirm --windowed --name "BC Roy Booker" --paths .
+          pyinstaller --noconfirm --windowed --name "KGP OPD" --paths .
           --collect-all playwright --copy-metadata keyring --collect-submodules keyring.backends
           packaging/launcher.py
       - name: Zip (macOS)
         if: runner.os == 'macOS'
         run: |
-          "dist/BC Roy Booker.app/Contents/MacOS/BC Roy Booker" --version
-          cd dist && ditto -c -k --keepParent "BC Roy Booker.app" "../${{ matrix.asset }}"
+          "dist/KGP OPD.app/Contents/MacOS/KGP OPD" --version
+          cd dist && ditto -c -k --keepParent "KGP OPD.app" "../${{ matrix.asset }}"
       - name: Zip (Windows)
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path "dist/BC Roy Booker" -DestinationPath "${{ matrix.asset }}"
+        run: Compress-Archive -Path "dist/KGP OPD" -DestinationPath "${{ matrix.asset }}"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset }}
@@ -48,6 +48,6 @@ jobs:
           merge-multiple: true
       - run: >
           gh release create "$GITHUB_REF_NAME" *.zip --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME"
-          --notes "Download the zip for your computer, unzip it, and open BC Roy Booker. See the README for the first-launch warning."
+          --notes "Download the zip for your computer, unzip it, and open KGP OPD. See the README for the first-launch warning."
         env:
           GH_TOKEN: ${{ github.token }}

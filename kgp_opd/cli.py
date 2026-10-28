@@ -1,4 +1,4 @@
-"""Command line: `bcroy-book setup | doctors | book | schedule | unschedule | forget`."""
+"""Command line: `kgp-opd setup | doctors | book | schedule | unschedule | forget`."""
 
 import argparse
 import sys
@@ -6,8 +6,8 @@ import threading
 import time
 from datetime import datetime, timedelta
 
-from bcroy_booker import __version__, system
-from bcroy_booker.booker import (AIM_AFTER, BASE, FIRE_CLAMP, FIRE_EARLY, IST, RETRY_FOR, ROSTER,
+from kgp_opd import __version__, system
+from kgp_opd.imedix import (AIM_AFTER, BASE, FIRE_CLAMP, FIRE_EARLY, IST, RETRY_FOR, ROSTER,
                                  WATCH_FROM, AmbiguousDoctor, ClockSync, already_booked, bookable,
                                  clinic_options, doctor_matches, fetch_slip, find_session, get_ccode,
                                  get_json, log, login, notify, pick_clinic, roster_sessions,
@@ -62,7 +62,7 @@ def cmd_setup(args):
         login(page, interactive=True, force_manual=True)
         ctx.close()
     if system.load_creds():
-        print("\nDone: your login is saved. Next, find your doctor:  bcroy-book doctors")
+        print("\nDone: your login is saved. Next, find your doctor:  kgp-opd doctors")
         return 0
     print("\nLogged in, but the login could not be captured. Run setup again.")
     return 1
@@ -93,7 +93,7 @@ def cmd_doctors(args):
         when = f"{s['start']:%a %d %b %H:%M} {s.get('session', '')}"
         print(f"{when:<22} {s['docname'][:33]:<34} {s['doc_id'][:13]:<14} "
               f"{s.get('patients', '?')}/{s.get('max_no_of_patients', '?'):<6} {status(s, now)}")
-    print("\nBook with:  bcroy-book book --doctor \"<part of the name, or the id>\"")
+    print("\nBook with:  kgp-opd book --doctor \"<part of the name, or the id>\"")
     return 0
 
 
@@ -304,7 +304,7 @@ def run_booking(ctx, page, args, pat_id, ccode, target, clinic, clock, prepared_
 
 def cmd_schedule(args):
     if not system.IS_MAC:
-        print("Scheduling is macOS-only. On Windows, start `bcroy-book book ...` any time before "
+        print("Scheduling is macOS-only. On Windows, start `kgp-opd book ...` any time before "
               "booking opens (keep the laptop plugged in and the lid open); it waits by itself.")
         return 2
     book_args = ["--doctor", args.doctor]
@@ -322,7 +322,7 @@ def cmd_schedule(args):
             target = find_session(ctx, ccode, args.date, args.session, args.doctor)
             ctx.close()
         if not target:
-            print(f"No upcoming bookable session for {args.doctor!r}. See: bcroy-book doctors")
+            print(f"No upcoming bookable session for {args.doctor!r}. See: kgp-opd doctors")
             return 1
         when = (target["opens"] - timedelta(minutes=10)).astimezone().replace(tzinfo=None)
         book_args += ["--date", f"{target['start']:%Y-%m-%d}", "--session", target["session"]]
@@ -336,7 +336,7 @@ def cmd_schedule(args):
     label = system.schedule(when, book_args)
     print(f"Scheduled for {when:%a %d %b %H:%M} ({label}). The Mac must be awake then: run\n"
           f"  sudo pmset schedule wake \"{(when - timedelta(minutes=5)):%m/%d/%y %H:%M:%S}\"\n"
-          f"to wake it. Log: {system.home() / 'scheduled.log'}. Cancel: bcroy-book unschedule")
+          f"to wake it. Log: {system.home() / 'scheduled.log'}. Cancel: kgp-opd unschedule")
     return 0
 
 
@@ -357,7 +357,7 @@ def cmd_forget(args):
 
 def build_parser():
     ap = argparse.ArgumentParser(
-        prog="bcroy-book",
+        prog="kgp-opd",
         description="Book an OPD slot at B.C. Roy Technology Hospital (iMediX) the moment booking opens.")
     ap.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = ap.add_subparsers(dest="command", required=True)

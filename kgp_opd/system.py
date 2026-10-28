@@ -10,17 +10,17 @@ import time
 import urllib.request
 from pathlib import Path
 
-APP = "bcroy-booker"
+APP = "kgp-opd"
 IS_MAC = sys.platform == "darwin"
 IS_WIN = sys.platform == "win32"
 KEYRING_SERVICE = APP
 KEYRING_USER = "login"  # one entry holding {"roll": ..., "password": ...}
-JOB_PREFIX = "com.bcroy-booker."
+JOB_PREFIX = "com.kgp-opd."
 
 
 def home():
-    """Folder for the browser profile and logs (override with BCROY_BOOKER_HOME)."""
-    d = Path(os.environ.get("BCROY_BOOKER_HOME") or Path.home() / f".{APP}")
+    """Folder for the browser profile and logs (override with KGP_OPD_HOME)."""
+    d = Path(os.environ.get("KGP_OPD_HOME") or Path.home() / f".{APP}")
     d.mkdir(parents=True, exist_ok=True)
     return d
 
@@ -68,7 +68,7 @@ $id = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.
 """
 
 
-def notify(msg, title="BC Roy booker"):
+def notify(msg, title="KGP OPD"):
     """Best effort: a desktop notification. Never raises."""
     try:
         if IS_MAC:
@@ -146,7 +146,7 @@ def _self_command():
     """How to run this program again: the app binary itself when packaged, else python -m."""
     if getattr(sys, "frozen", False):
         return [sys.executable]
-    return [sys.executable, "-m", "bcroy_booker"]
+    return [sys.executable, "-m", "kgp_opd"]
 
 
 def agents_dir():

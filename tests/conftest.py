@@ -25,7 +25,7 @@ class MemoryKeyring(KeyringBackend):
 @pytest.fixture(autouse=True)
 def isolated(tmp_path, monkeypatch):
     """Logs go to a temp folder and logins to an in-memory store, never the real ones."""
-    monkeypatch.setenv("BCROY_BOOKER_HOME", str(tmp_path / "home"))
+    monkeypatch.setenv("KGP_OPD_HOME", str(tmp_path / "home"))
     old = keyring.get_keyring()
     keyring.set_keyring(MemoryKeyring())
     yield
